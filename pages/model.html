@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>모델 - 위급 음성 및 비명 감지 시스템</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-brand">
+                <h1>Emergency Sound Detection</h1>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="../index.html" class="nav-link">홈</a></li>
+                <li><a href="model.html" class="nav-link active">모델</a></li>
+                <li><a href="visual.html" class="nav-link">시스템</a></li>
+                <li><a href="member.html" class="nav-link">팀원</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>딥러닝 모델</h1>
+            <p>CNN+Transformer 기반 비명 감지 모델의 구조와 성능</p>
+        </div>
+    </section>
+
+    <!-- Model Architecture Section -->
+    <section class="model-architecture">
+        <div class="container">
+            <h2 class="section-title">모델 아키텍처</h2>
+            <div class="arch-grid">
+                <div class="arch-card">
+                    <div class="arch-icon">🔍</div>
+                    <h3>CNN 레이어</h3>
+                    <p>오디오 데이터를 처리하여 로컬 특징을 추출합니다. Conv1d와 MaxPool1d를 사용하여 주파수 패턴을 학습합니다.</p>
+                    <div class="code-snippet">
+                        <code>
+nn.Conv1d(input_size, 128, kernel_size=3)<br>
+nn.MaxPool1d(kernel_size=2)
+                        </code>
+                    </div>
+                </div>
+                <div class="arch-card">
+                    <div class="arch-icon">🔄</div>
+                    <h3>Transformer 레이어</h3>
+                    <p>CNN 결과를 시퀀스 형태로 변환하여 시간적 의존성을 학습합니다. 복잡한 패턴을 효과적으로 포착합니다.</p>
+                    <div class="code-snippet">
+                        <code>
+nn.TransformerEncoderLayer(<br>
+&nbsp;&nbsp;d_model=32, nhead=2<br>
+)
+                        </code>
+                    </div>
+                </div>
+                <div class="arch-card">
+                    <div class="arch-icon">📊</div>
+                    <h3>분류 레이어</h3>
+                    <p>최종 출력으로 비명 여부를 판단하는 이진 분류를 수행합니다. Sigmoid 활성화 함수를 사용합니다.</p>
+                    <div class="code-snippet">
+                        <code>
+nn.Linear(32, num_classes)<br>
+torch.sigmoid(output)
+                        </code>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Model Comparison Section -->
+    <section class="model-comparison">
+        <div class="container">
+            <h2 class="section-title">모델 성능 비교</h2>
+            <div class="comparison-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>모델</th>
+                            <th>수렴 손실값</th>
+                            <th>수렴 에포크</th>
+                            <th>최종 정확도</th>
+                            <th>특징</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="winner">
+                            <td><strong>CNN+Transformer</strong></td>
+                            <td><span class="metric best">0.0002</span></td>
+                            <td><span class="metric best">40</span></td>
+                            <td><span class="metric best">99.92%</span></td>
+                            <td>빠른 수렴, 높은 안정성</td>
+                        </tr>
+                        <tr>
+                            <td>CNN-LSTM</td>
+                            <td><span class="metric">0.2717</span></td>
+                            <td><span class="metric">90</span></td>
+                            <td><span class="metric">87.02%</span></td>
+                            <td>중간 성능, 변동성 존재</td>
+                        </tr>
+                        <tr>
+                            <td>CNN-GRU</td>
+                            <td><span class="metric">0.0387</span></td>
+                            <td><span class="metric">80</span></td>
+                            <td><span class="metric">77.60%</span></td>
+                            <td>느린 수렴, 불안정한 학습</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Training Process Section -->
+    <section class="training-process">
+        <div class="container">
+            <h2 class="section-title">학습 과정</h2>
+            <div class="process-grid">
+                <div class="process-step">
+                    <div class="step-number">1</div>
+                    <h3>데이터 전처리</h3>
+                    <p>Kaggle 데이터셋을 활용하여 비명 소리와 일반 음성을 분류하고, Fourier 변환을 통해 주파수 데이터로 변환합니다.</p>
+                    <div class="tech-list">
+                        <span class="tech-tag">Fourier Transform</span>
+                        <span class="tech-tag">STFT</span>
+                        <span class="tech-tag">Librosa</span>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">2</div>
+                    <h3>모델 훈련</h3>
+                    <p>배치 크기 32, 학습률 0.001로 설정하고 Adam 옵티마이저를 사용하여 모델을 훈련합니다.</p>
+                    <div class="tech-list">
+                        <span class="tech-tag">Adam Optimizer</span>
+                        <span class="tech-tag">Cross Entropy Loss</span>
+                        <span class="tech-tag">PyTorch</span>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">3</div>
+                    <h3>성능 평가</h3>
+                    <p>정확도, 손실값, F1-score 등 다양한 지표를 통해 모델의 성능을 종합적으로 평가합니다.</p>
+                    <div class="tech-list">
+                        <span class="tech-tag">Accuracy</span>
+                        <span class="tech-tag">Precision</span>
+                        <span class="tech-tag">Recall</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Features Section -->
+    <section class="key-features">
+        <div class="container">
+            <h2 class="section-title">주요 특징</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">⚡</div>
+                    <h3>빠른 수렴</h3>
+                    <p>CNN+Transformer 모델은 40 에포크만에 최적 성능에 도달하여 다른 모델 대비 2배 이상 빠른 학습 속도를 보입니다.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🎯</div>
+                    <h3>높은 정확도</h3>
+                    <p>99.92%의 높은 정확도로 비명과 일반 음성을 정확하게 구분하며, 실제 응급 상황에서의 높은 신뢰성을 보장합니다.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">📈</div>
+                    <h3>안정적 학습</h3>
+                    <p>학습 과정에서 손실값이 안정적으로 감소하며, 0.0002의 매우 낮은 최종 손실값을 기록했습니다.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🔄</div>
+                    <h3>하이브리드 구조</h3>
+                    <p>CNN의 로컬 패턴 인식과 Transformer의 전역적 의존성 학습을 결합하여 최적의 성능을 달성합니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Data Processing Section -->
+    <section class="data-processing">
+        <div class="container">
+            <h2 class="section-title">데이터 처리 과정</h2>
+            <div class="process-flow">
+                <div class="flow-step">
+                    <div class="flow-icon">🎵</div>
+                    <h4>원본 오디오</h4>
+                    <p>WAV, MP3 형식의 음성 데이터</p>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-icon">🔄</div>
+                    <h4>전처리</h4>
+                    <p>16kHz 리샘플링 및 정규화</p>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-icon">📊</div>
+                    <h4>STFT 변환</h4>
+                    <p>시간-주파수 도메인 변환</p>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-icon">🤖</div>
+                    <h4>모델 입력</h4>
+                    <p>텐서 형태로 변환하여 학습</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technical Specifications -->
+    <section class="tech-specs">
+        <div class="container">
+            <h2 class="section-title">기술 사양</h2>
+            <div class="specs-grid">
+                <div class="spec-category">
+                    <h3>입력 데이터</h3>
+                    <ul>
+                        <li>샘플링 레이트: 16kHz</li>
+                        <li>입력 크기: 257</li>
+                        <li>배치 크기: 32</li>
+                        <li>프레임 크기: 10초</li>
+                    </ul>
+                </div>
+                <div class="spec-category">
+                    <h3>모델 구조</h3>
+                    <ul>
+                        <li>CNN 레이어: Conv1d + MaxPool1d</li>
+                        <li>Transformer: 2-head attention</li>
+                        <li>출력: 이진 분류 (비명/정상)</li>
+                        <li>활성화 함수: ReLU, Sigmoid</li>
+                    </ul>
+                </div>
+                <div class="spec-category">
+                    <h3>학습 설정</h3>
+                    <ul>
+                        <li>옵티마이저: Adam</li>
+                        <li>학습률: 0.001</li>
+                        <li>손실 함수: CrossEntropyLoss</li>
+                        <li>최대 에포크: 100</li>
+                    </ul>
+                </div>
+                <div class="spec-category">
+                    <h3>성능 지표</h3>
+                    <ul>
+                        <li>정확도: 99.92%</li>
+                        <li>손실값: 0.0002</li>
+                        <li>수렴 에포크: 40</li>
+                        <li>추론 시간: 실시간</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 신호 및 시스템 프로젝트 - Fourier Frontier 팀</p>
+            <p>연세대학교 컴퓨터공학과</p>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+</body>
+</html>
+
+<style>
+/* Additional styles for model page */
+.page-header {
+    margin-top: 80px;
+    padding: 4rem 0 2rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    text-align: center;
+}
+
+.page-header h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.page-header p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+/* Model Architecture */
+.model-architecture {
+    padding: 5rem 0;
+    background: white;
+}
+
+.arch-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.arch-card {
+    background: var(--bg-light);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.arch-card:hover {
+    transform: translateY(-5px);
+}
+
+.arch-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.code-snippet {
+    background: var(--bg-dark);
+    color: #10b981;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    text-align: left;
+}
+
+/* Model Comparison */
+.model-comparison {
+    padding: 5rem 0;
+    background: var(--bg-light);
+}
+
+.comparison-table {
+    overflow-x: auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+}
+
+.comparison-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.comparison-table th,
+.comparison-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.comparison-table th {
+    background: var(--gradient);
+    color: white;
+    font-weight: bold;
+}
+
+.comparison-table .winner {
+    background: rgba(34, 197, 94, 0.1);
+}
+
+.metric {
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    background: var(--bg-light);
+    font-weight: bold;
+}
+
+.metric.best {
+    background: var(--gradient);
+    color: white;
+}
+
+/* Training Process */
+.training-process {
+    padding: 5rem 0;
+    background: white;
+}
+
+.process-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.process-step {
+    position: relative;
+    background: var(--bg-light);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+}
+
+.step-number {
+    position: absolute;
+    top: -15px;
+    left: 2rem;
+    width: 40px;
+    height: 40px;
+    background: var(--gradient);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.tech-list {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.tech-tag {
+    background: var(--primary-color);
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* Key Features */
+.key-features {
+    padding: 5rem 0;
+    background: var(--bg-light);
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.feature-item {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    text-align: center;
+}
+
+.feature-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+/* Data Processing */
+.data-processing {
+    padding: 5rem 0;
+    background: white;
+}
+
+.process-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.flow-step {
+    background: var(--bg-light);
+    padding: 2rem;
+    border-radius: 12px;
+    text-align: center;
+    min-width: 180px;
+    box-shadow: var(--shadow);
+}
+
+.flow-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.flow-arrow {
+    font-size: 2rem;
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+/* Technical Specifications */
+.tech-specs {
+    padding: 5rem 0;
+    background: var(--bg-light);
+}
+
+.specs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.spec-category {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+}
+
+.spec-category h3 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+
+.spec-category ul {
+    list-style: none;
+}
+
+.spec-category li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.spec-category li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: var(--secondary-color);
+    font-weight: bold;
+}
+
+@media (max-width: 768px) {
+    .process-flow {
+        flex-direction: column;
+    }
+    
+    .flow-arrow {
+        transform: rotate(90deg);
+    }
+    
+    .comparison-table {
+        font-size: 0.9rem;
+    }
+}
+</style>

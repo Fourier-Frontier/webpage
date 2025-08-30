@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>시스템 - 위급 음성 및 비명 감지 시스템</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-brand">
+                <h1>Emergency Sound Detection</h1>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="../index.html" class="nav-link">홈</a></li>
+                <li><a href="model.html" class="nav-link">모델</a></li>
+                <li><a href="visual.html" class="nav-link active">시스템</a></li>
+                <li><a href="member.html" class="nav-link">팀원</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>실시간 감지 시스템</h1>
+            <p>CNN+Transformer와 Google Speech API를 결합한 실시간 위급 상황 탐지</p>
+        </div>
+    </section>
+
+    <!-- System Overview -->
+    <section class="system-overview">
+        <div class="container">
+            <h2 class="section-title">시스템 구성도</h2>
+            <div class="system-diagram">
+                <div class="system-component" data-step="1">
+                    <div class="component-icon">🎤</div>
+                    <h3>음성 입력</h3>
+                    <p>실시간 오디오 캡처</p>
+                    <div class="tech-stack">
+                        <span>sounddevice</span>
+                        <span>16kHz 샘플링</span>
+                    </div>
+                </div>
+                
+                <div class="system-arrow">→</div>
+                
+                <div class="system-component" data-step="2">
+                    <div class="component-icon">🔄</div>
+                    <h3>전처리</h3>
+                    <p>STFT 변환 및 정규화</p>
+                    <div class="tech-stack">
+                        <span>librosa</span>
+                        <span>numpy</span>
+                    </div>
+                </div>
+                
+                <div class="system-arrow">→</div>
+                
+                <div class="system-component parallel">
+                    <div class="parallel-branch" data-step="3a">
+                        <div class="component-icon">🤖</div>
+                        <h3>비명 감지 모델</h3>
+                        <p>CNN+Transformer</p>
+                        <div class="tech-stack">
+                            <span>PyTorch</span>
+                            <span>99.92% 정확도</span>
+                        </div>
+                    </div>
+                    
+                    <div class="parallel-branch" data-step="3b">
+                        <div class="component-icon">🗣️</div>
+                        <h3>음성 인식</h3>
+                        <p>Google Speech-to-Text</p>
+                        <div class="tech-stack">
+                            <span>Google API</span>
+                            <span>키워드 탐지</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="system-arrow">→</div>
+                
+                <div class="system-component" data-step="4">
+                    <div class="component-icon">⚡</div>
+                    <h3>위급 판정</h3>
+                    <p>통합 결과 분석</p>
+                    <div class="tech-stack">
+                        <span>실시간 알림</span>
+                        <span>경고음 재생</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Demo Section -->
+    <section class="live-demo">
+        <div class="container">
+            <h2 class="section-title">실시간 데모</h2>
+            <div class="demo-container">
+                <div class="demo-panel">
+                    <h3>음성 입력 상태</h3>
+                    <div class="audio-visualizer">
+                        <div class="waveform">
+                            <div class="wave-bar" style="height: 20%"></div>
+                            <div class="wave-bar" style="height: 45%"></div>
+                            <div class="wave-bar" style="height: 70%"></div>
+                            <div class="wave-bar" style="height: 35%"></div>
+                            <div class="wave-bar" style="height: 85%"></div>
+                            <div class="wave-bar" style="height: 60%"></div>
+                            <div class="wave-bar" style="height: 40%"></div>
+                            <div class="wave-bar" style="height: 75%"></div>
+                            <div class="wave-bar" style="height: 25%"></div>
+                            <div class="wave-bar" style="height: 55%"></div>
+                        </div>
+                    </div>
+                    <div class="demo-controls">
+                        <button class="demo-btn" id="startDemo">데모 시작</button>
+                        <button class="demo-btn secondary" id="stopDemo">중지</button>
+                    </div>
+                </div>
+                
+                <div class="demo-panel">
+                    <h3>분석 결과</h3>
+                    <div class="analysis-results">
+                        <div class="result-item">
+                            <span class="result-label">비명 감지 확률:</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="screamProb"></div>
+                                <span class="progress-text" id="screamProbText">0%</span>
+                            </div>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">키워드 탐지:</span>
+                            <span class="result-value" id="keywordResult">대기 중...</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">위급 상황:</span>
+                            <span class="result-status" id="emergencyStatus">안전</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Performance Metrics -->
+    <section class="performance-metrics">
+        <div class="container">
+            <h2 class="section-title">성능 지표</h2>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-icon">⏱️</div>
+                    <h3>응답 시간</h3>
+                    <div class="metric-value">
+                        <span class="big-number">< 1</span>
+                        <span class="unit">초</span>
+                    </div>
+                    <p>실시간 분석 및 결과 출력</p>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon">🎯</div>
+                    <h3>정확도</h3>
+                    <div class="metric-value">
+                        <span class="big-number">99.92</span>
+                        <span class="unit">%</span>
+                    </div>
+                    <p>비명 감지 정확도</p>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon">🔧</div>
+                    <h3>처리 용량</h3>
+                    <div class="metric-value">
+                        <span class="big-number">10</span>
+                        <span class="unit">초</span>
+                    </div>
+                    <p>동시 오디오 분석 구간</p>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon">📊</div>
+                    <h3>CPU 사용률</h3>
+                    <div class="metric-value">
+                        <span class="big-number">< 30</span>
+                        <span class="unit">%</span>
+                    </div>
+                    <p>효율적인 리소스 활용</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- System Features -->
+    <section class="system-features">
+        <div class="container">
+            <h2 class="section-title">시스템 특징</h2>
+            <div class="features-container">
+                <div class="feature-category">
+                    <h3>🔄 실시간 처리</h3>
+                    <ul>
+                        <li>스트리밍 오디오 입력 지원</li>
+                        <li>지연 시간 최소화 (< 1초)</li>
+                        <li>연속적인 모니터링</li>
+                        <li>자동 세그멘테이션</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-category">
+                    <h3>🤖 AI 통합</h3>
+                    <ul>
+                        <li>CNN+Transformer 모델</li>
+                        <li>Google Speech-to-Text API</li>
+                        <li>다중 감지 알고리즘</li>
+                        <li>신뢰도 기반 판정</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-category">
+                    <h3>⚡ 즉시 대응</h3>
+                    <ul>
+                        <li>위급 상황 즉시 알림</li>
+                        <li>경고음 자동 재생</li>
+                        <li>상태 로그 기록</li>
+                        <li>시각적 피드백 제공</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-category">
+                    <h3>🔧 확장성</h3>
+                    <ul>
+                        <li>모듈식 아키텍처</li>
+                        <li>다양한 입력 소스 지원</li>
+                        <li>커스터마이징 가능한 임계값</li>
+                        <li>외부 시스템 연동 가능</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Stack -->
+    <section class="tech-stack-section">
+        <div class="container">
+            <h2 class="section-title">기술 스택</h2>
+            <div class="stack-categories">
+                <div class="stack-category">
+                    <h3>AI/ML</h3>
+                    <div class="tech-tags">
+                        <span class="tech-tag">PyTorch</span>
+                        <span class="tech-tag">NumPy</span>
+                        <span class="tech-tag">Librosa</span>
+                        <span class="tech-tag">SciPy</span>
+                    </div>
+                </div>
+                
+                <div class="stack-category">
+                    <h3>API</h3>
+                    <div class="tech-tags">
+                        <span class="tech-tag">Google Speech-to-Text</span>
+                        <span class="tech-tag">REST API</span>
+                    </div>
+                </div>
+                
+                <div class="stack-category">
+                    <h3>오디오 처리</h3>
+                    <div class="tech-tags">
+                        <span class="tech-tag">sounddevice</span>
+                        <span class="tech-tag">wave</span>
+                        <span class="tech-tag">matplotlib</span>
+                    </div>
+                </div>
+                
+                <div class="stack-category">
+                    <h3>개발 환경</h3>
+                    <div class="tech-tags">
+                        <span class="tech-tag">Python</span>
+                        <span class="tech-tag">GitHub</span>
+                        <span class="tech-tag">Jupyter</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Test Results -->
+    <section class="test-results">
+        <div class="container">
+            <h2 class="section-title">테스트 결과</h2>
+            <div class="test-container">
+                <div class="test-video">
+                    <div class="video-placeholder">
+                        <div class="play-button">▶</div>
+                        <p>시스템 데모 영상</p>
+                        <small>YouTube: https://www.youtube.com/watch?v=9sI7QYvPGFU</small>
+                    </div>
+                </div>
+                <div class="test-description">
+                    <h3>테스트 시나리오</h3>
+                    <div class="scenario-list">
+                        <div class="scenario-item">
+                            <span class="scenario-number">1</span>
+                            <div>
+                                <strong>"Help" 키워드 테스트</strong>
+                                <p>도움 요청 음성에 대한 키워드 탐지 성능 검증</p>
+                            </div>
+                        </div>
+                        <div class="scenario-item">
+                            <span class="scenario-number">2</span>
+                            <div>
+                                <strong>비명 소리 테스트</strong>
+                                <p>다양한 비명 패턴에 대한 AI 모델 감지 능력 평가</p>
+                            </div>
+                        </div>
+                        <div class="scenario-item">
+                            <span class="scenario-number">3</span>
+                            <div>
+                                <strong>일반 소음 테스트</strong>
+                                <p>false positive 방지를 위한 일반 소음 구분 능력 검증</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 신호 및 시스템 프로젝트 - Fourier Frontier 팀</p>
+            <p>연세대학교 컴퓨터공학과</p>
+        </div>
+    </footer>
+
+    <script src="../js/visual.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>
+
+<style>
+/* Page Header */
+.page-header {
+    margin-top: 80px;
+    padding: 4rem 0 2rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    text-align: center;
+}
+
+.page-header h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.page-header p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+/* System Overview */
+.system-overview {
+    padding: 5rem 0;
+    background: white;
+}
+
+.system-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.system-component {
+    background: var(--bg-light);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    text-align: center;
+    min-width: 200px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+}
+
+.system-component:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.system-component.parallel {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    background: transparent;
+    box-shadow: none;
+    padding: 0;
+}
+
+.parallel-branch {
+    background: var(--bg-light);
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    text-align: center;
+}
+
+.component-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.system-component h3 {
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.system-component p {
+    color: var(--text-light);
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    justify-content: center;
+}
+
+.tech-stack span {
+    background: var(--primary-color);
+    color: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+
+.system-arrow {
+    font-size: 2rem;
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+/* Live Demo */
+.live-demo {
+    padding: 5rem 0;
+    background: var(--bg-light);
+}
+
+.demo-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+}
+
+.demo-panel {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+}
+
+.demo-panel h3 {
+    color: var(--text-color);
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+/* Audio Visualizer */
+.audio-visualizer {
+    background: var(--bg-dark);
+    padding: 2rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+}
+
+.waveform {
+    display: flex;
+    align-items: end;
+    justify-content: space-around;
+    height: 120px;
+    gap: 4px;
+}
+
+.wave-bar {
+    width: 8px;
+    background: var(--gradient);
+    border-radius: 4px;
+    animation: wave 1.5s ease-in-out infinite;
+}
+
+.wave-bar:nth-child(odd) {
+    animation-delay: 0.1s;
+}
+
+.wave-bar:nth-child(even) {
+    animation-delay: 0.3s;
+}
+
+@keyframes wave {
+    0%, 100% {
+        transform: scaleY(0.3);
+        opacity: 0.7;
+    }
+    50% {
+        transform: scaleY(1);
+        opacity: 1;
+    }
+}
+
+/* Demo Controls */
+.demo-controls {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.demo-btn {
+    background: var(--gradient);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: opacity 0.3s ease;
+}
+
+.demo-btn:hover {
+    opacity: 0.9;
+}
+
+.demo-btn.secondary {
+    background: var(--text-light);
+}
+
+/* Analysis Results */
+.analysis-results {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.result-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.result-label {
+    color: var(--text-color);
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.progress-bar {
+    position: relative;
+    background: var(--bg-light);
+    height: 30px;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--gradient);
+    border-radius: 15px;
+    transition: width 0.3s ease;
+    width: 0%;
+}
+
+.progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--text-color);
+    font-weight: bold;
+    font-size: 0.9rem;
+    z-index: 1;
+}
+
+.result-value {
+    background: var(--bg-light);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    color: var(--text-color);
+    font-weight: bold;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.result-status {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: bold;
+    color: white;
+    background: #10b981;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.result-status.emergency {
+    background: #ef4444;
+    animation: emergency-flash 0.5s ease-in-out infinite;
+}
+
+/* Performance Metrics */
+.performance-metrics {
+    padding: 5rem 0;
+    background: white;
+}
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.metric-card {
+    background: var(--bg-light);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.metric-card:hover {
+    transform: translateY(-5px);
+}
+
+.metric-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.metric-value {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 1rem 0;
+}
+
+.big-number {
+    font-size: 3rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.unit {
+    font-size: 1.2rem;
+    color: var(--text-light);
+    font-weight: bold;
+}
+
+/* System Features */
+.system-features {
+    padding: 5rem 0;
+    background: var(--bg-light);
+}
+
+.features-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+}
+
+.feature-category {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+}
+
+.feature-category h3 {
+    color: var(--text-color);
+    margin-bottom: 1.5rem;
+    font-size: 1.3rem;
+}
+
+.feature-category ul {
+    list-style: none;
+}
+
+.feature-category li {
+    padding: 0.8rem 0;
+    border-bottom: 1px solid var(--border-color);
+    position: relative;
+    padding-left: 1.5rem;
+    color: var(--text-color);
+}
+
+.feature-category li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--secondary-color);
+    font-weight: bold;
+}
+
+/* Technology Stack */
+.tech-stack-section {
+    padding: 5rem 0;
+    background: white;
+}
+
+.stack-categories {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.stack-category {
+    background: var(--bg-light);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    text-align: center;
+}
+
+.stack-category h3 {
+    color: var(--text-color);
+    margin-bottom: 1.5rem;
+    font-size: 1.3rem;
+}
+
+.tech-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.tech-tag {
+    background: var(--primary-color);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Test Results */
+.test-results {
+    padding: 5rem 0;
+    background: var(--bg-light);
+}
+
+.test-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+}
+
+.test-video {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+}
+
+.video-placeholder {
+    background: var(--bg-dark);
+    color: white;
+    padding: 4rem 2rem;
+    border-radius: 8px;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.video-placeholder:hover {
+    opacity: 0.9;
+}
+
+.play-button {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    color: var(--accent-color);
+}
+
+.test-description {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+}
+
+.test-description h3 {
+    color: var(--text-color);
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+.scenario-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.scenario-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--bg-light);
+    border-radius: 8px;
+}
+
+.scenario-number {
+    width: 30px;
+    height: 30px;
+    background: var(--gradient);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.scenario-item strong {
+    color: var(--text-color);
+    display: block;
+    margin-bottom: 0.3rem;
+}
+
+.scenario-item p {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* Animations */
+@keyframes emergency-flash {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .system-diagram {
+        flex-direction: column;
+    }
+    
+    .system-arrow {
+        transform: rotate(90deg);
+    }
+    
+    .system-component.parallel {
+        width: 100%;
+    }
+    
+    .demo-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .test-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .page-header h1 {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .metrics-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .big-number {
+        font-size: 2rem;
+    }
+}
+</style>
