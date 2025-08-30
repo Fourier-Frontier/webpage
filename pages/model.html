@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>모델 - 위급 음성 및 비명 감지 시스템</title>
+    <title>Model - Emergency Voice and Scream Detection System</title>
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
@@ -14,10 +14,10 @@
                 <h1>Emergency Sound Detection</h1>
             </div>
             <ul class="nav-menu">
-                <li><a href="../index.html" class="nav-link">홈</a></li>
-                <li><a href="model.html" class="nav-link active">모델</a></li>
-                <li><a href="visual.html" class="nav-link">시스템</a></li>
-                <li><a href="member.html" class="nav-link">팀원</a></li>
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="model.html" class="nav-link active">Model</a></li>
+                <li><a href="visual.html" class="nav-link">System</a></li>
+                <li><a href="member.html" class="nav-link">Team</a></li>
             </ul>
         </nav>
     </header>
@@ -25,20 +25,20 @@
     <!-- Page Header -->
     <section class="page-header">
         <div class="container">
-            <h1>딥러닝 모델</h1>
-            <p>CNN+Transformer 기반 비명 감지 모델의 구조와 성능</p>
+            <h1>Deep Learning Model</h1>
+            <p>Architecture and performance of the CNN+Transformer-based scream detection model</p>
         </div>
     </section>
 
     <!-- Model Architecture Section -->
     <section class="model-architecture">
         <div class="container">
-            <h2 class="section-title">모델 아키텍처</h2>
+            <h2 class="section-title">Model Architecture</h2>
             <div class="arch-grid">
                 <div class="arch-card">
                     <div class="arch-icon">🔍</div>
-                    <h3>CNN 레이어</h3>
-                    <p>오디오 데이터를 처리하여 로컬 특징을 추출합니다. Conv1d와 MaxPool1d를 사용하여 주파수 패턴을 학습합니다.</p>
+                    <h3>CNN Layer</h3>
+                    <p>Processes audio data to extract local features. Learns frequency patterns using Conv1d and MaxPool1d.</p>
                     <div class="code-snippet">
                         <code>
 nn.Conv1d(input_size, 128, kernel_size=3)<br>
@@ -48,8 +48,8 @@ nn.MaxPool1d(kernel_size=2)
                 </div>
                 <div class="arch-card">
                     <div class="arch-icon">🔄</div>
-                    <h3>Transformer 레이어</h3>
-                    <p>CNN 결과를 시퀀스 형태로 변환하여 시간적 의존성을 학습합니다. 복잡한 패턴을 효과적으로 포착합니다.</p>
+                    <h3>Transformer Layer</h3>
+                    <p>Converts CNN outputs into a sequence and learns temporal dependencies, effectively capturing complex patterns.</p>
                     <div class="code-snippet">
                         <code>
 nn.TransformerEncoderLayer(<br>
@@ -60,8 +60,8 @@ nn.TransformerEncoderLayer(<br>
                 </div>
                 <div class="arch-card">
                     <div class="arch-icon">📊</div>
-                    <h3>분류 레이어</h3>
-                    <p>최종 출력으로 비명 여부를 판단하는 이진 분류를 수행합니다. Sigmoid 활성화 함수를 사용합니다.</p>
+                    <h3>Classification Layer</h3>
+                    <p>Performs binary classification to determine whether a scream is present. Uses the Sigmoid activation function.</p>
                     <div class="code-snippet">
                         <code>
 nn.Linear(32, num_classes)<br>
@@ -76,16 +76,16 @@ torch.sigmoid(output)
     <!-- Model Comparison Section -->
     <section class="model-comparison">
         <div class="container">
-            <h2 class="section-title">모델 성능 비교</h2>
+            <h2 class="section-title">Model Performance Comparison</h2>
             <div class="comparison-table">
                 <table>
                     <thead>
                         <tr>
-                            <th>모델</th>
-                            <th>수렴 손실값</th>
-                            <th>수렴 에포크</th>
-                            <th>최종 정확도</th>
-                            <th>특징</th>
+                            <th>Model</th>
+                            <th>Converged Loss</th>
+                            <th>Converged Epochs</th>
+                            <th>Final Accuracy</th>
+                            <th>Notes</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -94,21 +94,21 @@ torch.sigmoid(output)
                             <td><span class="metric best">0.0002</span></td>
                             <td><span class="metric best">40</span></td>
                             <td><span class="metric best">99.92%</span></td>
-                            <td>빠른 수렴, 높은 안정성</td>
+                            <td>Fast convergence, high stability</td>
                         </tr>
                         <tr>
                             <td>CNN-LSTM</td>
                             <td><span class="metric">0.2717</span></td>
                             <td><span class="metric">90</span></td>
                             <td><span class="metric">87.02%</span></td>
-                            <td>중간 성능, 변동성 존재</td>
+                            <td>Moderate performance, some variance</td>
                         </tr>
                         <tr>
                             <td>CNN-GRU</td>
                             <td><span class="metric">0.0387</span></td>
                             <td><span class="metric">80</span></td>
                             <td><span class="metric">77.60%</span></td>
-                            <td>느린 수렴, 불안정한 학습</td>
+                            <td>Slow convergence, unstable training</td>
                         </tr>
                     </tbody>
                 </table>
@@ -119,12 +119,12 @@ torch.sigmoid(output)
     <!-- Training Process Section -->
     <section class="training-process">
         <div class="container">
-            <h2 class="section-title">학습 과정</h2>
+            <h2 class="section-title">Training Process</h2>
             <div class="process-grid">
                 <div class="process-step">
                     <div class="step-number">1</div>
-                    <h3>데이터 전처리</h3>
-                    <p>Kaggle 데이터셋을 활용하여 비명 소리와 일반 음성을 분류하고, Fourier 변환을 통해 주파수 데이터로 변환합니다.</p>
+                    <h3>Data Preprocessing</h3>
+                    <p>Classifies scream and normal audio using a Kaggle dataset and converts signals to frequency-domain features via Fourier transform.</p>
                     <div class="tech-list">
                         <span class="tech-tag">Fourier Transform</span>
                         <span class="tech-tag">STFT</span>
@@ -133,8 +133,8 @@ torch.sigmoid(output)
                 </div>
                 <div class="process-step">
                     <div class="step-number">2</div>
-                    <h3>모델 훈련</h3>
-                    <p>배치 크기 32, 학습률 0.001로 설정하고 Adam 옵티마이저를 사용하여 모델을 훈련합니다.</p>
+                    <h3>Model Training</h3>
+                    <p>Trains with batch size 32 and learning rate 0.001 using the Adam optimizer.</p>
                     <div class="tech-list">
                         <span class="tech-tag">Adam Optimizer</span>
                         <span class="tech-tag">Cross Entropy Loss</span>
@@ -143,8 +143,8 @@ torch.sigmoid(output)
                 </div>
                 <div class="process-step">
                     <div class="step-number">3</div>
-                    <h3>성능 평가</h3>
-                    <p>정확도, 손실값, F1-score 등 다양한 지표를 통해 모델의 성능을 종합적으로 평가합니다.</p>
+                    <h3>Performance Evaluation</h3>
+                    <p>Evaluates the model comprehensively using metrics such as accuracy, loss, and F1-score.</p>
                     <div class="tech-list">
                         <span class="tech-tag">Accuracy</span>
                         <span class="tech-tag">Precision</span>
@@ -158,27 +158,27 @@ torch.sigmoid(output)
     <!-- Key Features Section -->
     <section class="key-features">
         <div class="container">
-            <h2 class="section-title">주요 특징</h2>
+            <h2 class="section-title">Key Features</h2>
             <div class="features-grid">
                 <div class="feature-item">
                     <div class="feature-icon">⚡</div>
-                    <h3>빠른 수렴</h3>
-                    <p>CNN+Transformer 모델은 40 에포크만에 최적 성능에 도달하여 다른 모델 대비 2배 이상 빠른 학습 속도를 보입니다.</p>
+                    <h3>Fast Convergence</h3>
+                    <p>The CNN+Transformer model reaches optimal performance in just 40 epochs, over 2× faster than other baselines.</p>
                 </div>
                 <div class="feature-item">
                     <div class="feature-icon">🎯</div>
-                    <h3>높은 정확도</h3>
-                    <p>99.92%의 높은 정확도로 비명과 일반 음성을 정확하게 구분하며, 실제 응급 상황에서의 높은 신뢰성을 보장합니다.</p>
+                    <h3>High Accuracy</h3>
+                    <p>Achieves 99.92% accuracy, reliably distinguishing screams from normal audio for real-world emergencies.</p>
                 </div>
                 <div class="feature-item">
                     <div class="feature-icon">📈</div>
-                    <h3>안정적 학습</h3>
-                    <p>학습 과정에서 손실값이 안정적으로 감소하며, 0.0002의 매우 낮은 최종 손실값을 기록했습니다.</p>
+                    <h3>Stable Training</h3>
+                    <p>Loss decreases steadily during training, reaching a very low final loss of 0.0002.</p>
                 </div>
                 <div class="feature-item">
                     <div class="feature-icon">🔄</div>
-                    <h3>하이브리드 구조</h3>
-                    <p>CNN의 로컬 패턴 인식과 Transformer의 전역적 의존성 학습을 결합하여 최적의 성능을 달성합니다.</p>
+                    <h3>Hybrid Architecture</h3>
+                    <p>Combines CNN’s local pattern recognition with Transformer’s global dependency modeling for optimal performance.</p>
                 </div>
             </div>
         </div>
@@ -187,30 +187,30 @@ torch.sigmoid(output)
     <!-- Data Processing Section -->
     <section class="data-processing">
         <div class="container">
-            <h2 class="section-title">데이터 처리 과정</h2>
+            <h2 class="section-title">Data Processing Pipeline</h2>
             <div class="process-flow">
                 <div class="flow-step">
                     <div class="flow-icon">🎵</div>
-                    <h4>원본 오디오</h4>
-                    <p>WAV, MP3 형식의 음성 데이터</p>
+                    <h4>Raw Audio</h4>
+                    <p>WAV, MP3 formats</p>
                 </div>
                 <div class="flow-arrow">→</div>
                 <div class="flow-step">
                     <div class="flow-icon">🔄</div>
-                    <h4>전처리</h4>
-                    <p>16kHz 리샘플링 및 정규화</p>
+                    <h4>Preprocessing</h4>
+                    <p>16 kHz resampling and normalization</p>
                 </div>
                 <div class="flow-arrow">→</div>
                 <div class="flow-step">
                     <div class="flow-icon">📊</div>
-                    <h4>STFT 변환</h4>
-                    <p>시간-주파수 도메인 변환</p>
+                    <h4>STFT</h4>
+                    <p>Time–frequency domain transform</p>
                 </div>
                 <div class="flow-arrow">→</div>
                 <div class="flow-step">
                     <div class="flow-icon">🤖</div>
-                    <h4>모델 입력</h4>
-                    <p>텐서 형태로 변환하여 학습</p>
+                    <h4>Model Input</h4>
+                    <p>Converted to tensors for training</p>
                 </div>
             </div>
         </div>
@@ -219,42 +219,42 @@ torch.sigmoid(output)
     <!-- Technical Specifications -->
     <section class="tech-specs">
         <div class="container">
-            <h2 class="section-title">기술 사양</h2>
+            <h2 class="section-title">Technical Specifications</h2>
             <div class="specs-grid">
                 <div class="spec-category">
-                    <h3>입력 데이터</h3>
+                    <h3>Input Data</h3>
                     <ul>
-                        <li>샘플링 레이트: 16kHz</li>
-                        <li>입력 크기: 257</li>
-                        <li>배치 크기: 32</li>
-                        <li>프레임 크기: 10초</li>
+                        <li>Sampling Rate: 16 kHz</li>
+                        <li>Input Size: 257</li>
+                        <li>Batch Size: 32</li>
+                        <li>Frame Length: 10 seconds</li>
                     </ul>
                 </div>
                 <div class="spec-category">
-                    <h3>모델 구조</h3>
+                    <h3>Model Structure</h3>
                     <ul>
-                        <li>CNN 레이어: Conv1d + MaxPool1d</li>
+                        <li>CNN: Conv1d + MaxPool1d</li>
                         <li>Transformer: 2-head attention</li>
-                        <li>출력: 이진 분류 (비명/정상)</li>
-                        <li>활성화 함수: ReLU, Sigmoid</li>
+                        <li>Output: Binary classification (scream/normal)</li>
+                        <li>Activations: ReLU, Sigmoid</li>
                     </ul>
                 </div>
                 <div class="spec-category">
-                    <h3>학습 설정</h3>
+                    <h3>Training Setup</h3>
                     <ul>
-                        <li>옵티마이저: Adam</li>
-                        <li>학습률: 0.001</li>
-                        <li>손실 함수: CrossEntropyLoss</li>
-                        <li>최대 에포크: 100</li>
+                        <li>Optimizer: Adam</li>
+                        <li>Learning Rate: 0.001</li>
+                        <li>Loss Function: CrossEntropyLoss</li>
+                        <li>Max Epochs: 100</li>
                     </ul>
                 </div>
                 <div class="spec-category">
-                    <h3>성능 지표</h3>
+                    <h3>Performance Metrics</h3>
                     <ul>
-                        <li>정확도: 99.92%</li>
-                        <li>손실값: 0.0002</li>
-                        <li>수렴 에포크: 40</li>
-                        <li>추론 시간: 실시간</li>
+                        <li>Accuracy: 99.92%</li>
+                        <li>Loss: 0.0002</li>
+                        <li>Converged Epochs: 40</li>
+                        <li>Inference Time: Real-time</li>
                     </ul>
                 </div>
             </div>
@@ -264,8 +264,8 @@ torch.sigmoid(output)
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2024 신호 및 시스템 프로젝트 - Fourier Frontier 팀</p>
-            <p>연세대학교 컴퓨터공학과</p>
+            <p>&copy; 2024 Signal and Systems Project - Fourier Frontier Team</p>
+            <p>Yonsei University</p>
         </div>
     </footer>
 
@@ -499,7 +499,7 @@ torch.sigmoid(output)
 }
 
 .specs-grid {
-    display: grid;
+    display: grid,
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 2rem;
 }
